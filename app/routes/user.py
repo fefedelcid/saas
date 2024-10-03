@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from app.database import get_session
+from app.security import create_access_token, verify_password
 from app.models import User
 from app.middlewares.user_mom import (
     create_user,            # POST
@@ -13,16 +14,28 @@ from app.middlewares.user_mom import (
 
 user_router = APIRouter()
 
-@user_router.post('/')
-def create_new_user(user: User, session: Session = Depends(get_session)):
-    db_user = get_user_by_id(user.id, session)
-    if db_user:
+
+# Ruta para registro de usuario
+@user_router.post('/register')
+def register(user: User, session: Session = Depends(get_session)):
+    existing_user = get_user_by_id(user.id, session)
+    if existing_user:
         raise HTTPException(status_code=400, detail="El usuario ya se encuentra registrado.")
 
-    db_user = get_user_by_username(user.username, session)
-    if db_user:
+    existing_user = get_user_by_username(user.username, session)
+    if existing_user:
         raise HTTPException(status_code=400, detail="El nombre de usuario ya fue tomado.")
     return create_user(user, session)
+
+
+# Ruta para login
+@user_router.post('/login')
+def login(username: str, password: str, session: Session = Depends(get_session)):
+    user = get_user_by_username(username, session)
+    if not user or not verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Usuario o contraseña inválidos.")
+    access_token = create_access_token({"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @user_router.get('/{id}')

@@ -1,6 +1,7 @@
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field, Relationship, text
 from typing import Optional, List
 from datetime import datetime
+
 
 class Supplier(SQLModel, table=True):
     __tablename__ = "proveedores"
@@ -36,14 +37,11 @@ class Product(SQLModel, table=True):
     description: Optional[str] = None
 
     # Relaciones con proveedores y rubros
-    supplier_id: int = Field(foreign_key="proveedores.id")
-    industry_id: int = Field(foreign_key="rubros.id")
-
+    supplier_id: Optional[int] = Field(default=None, foreign_key="proveedores.id")
     supplier: Optional[Supplier] = Relationship(back_populates="products")
-    industry: Optional[Industry] = Relationship(back_populates="products")
 
-    # Relación con Detalle
-    details: List["Detail"] = Relationship(back_populates="product")
+    industry_id: Optional[int] = Field(default=None, foreign_key="rubros.id")
+    industry: Optional[Industry] = Relationship(back_populates="products")
 
 
 class Detail(SQLModel, table=True):
@@ -55,9 +53,6 @@ class Detail(SQLModel, table=True):
     unit_price: float # precio al que se vendió el producto
     subtotal: float # precio total de esta línea
 
-    # Relación con Product
-    product: Optional[Product] = Relationship(back_populates="details")
-
     # Relación M-1 detalles-movimiento
     movement_id: int = Field(foreign_key="movimientos.id")
     movement: Optional["Movement"] = Relationship(back_populates="details")
@@ -67,15 +62,16 @@ class Movement(SQLModel, table=True):
     __tablename__ = "movimientos"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    created_at: datetime = Field(default_factory=datetime.now) # Fecha de la venta
+    created_at: datetime = Field(sa_column_kwargs={"server_default": text("CURRENT_TIMESTAMP"),}) # Fecha de la venta
     total: float # Monto total de la venta
+    payment: str # Método de pago
 
     # Relaciones con User y Details
     user_id: int = Field(foreign_key="usuarios.id")
-    user: Optional["User"] = Relationship(back_populates="movimientos")
+    user: Optional["User"] = Relationship(back_populates="movements")
 
     # Relación 1-M movimiento-detalles
-    details: List[Detail] = Relationship(back_populates="movement")
+    details: Optional[List[Detail]] = Relationship(back_populates="movement")
 
 
 class User(SQLModel, table=True):
@@ -85,8 +81,37 @@ class User(SQLModel, table=True):
     username: str = Field(index=True, unique=True)
     password: str
     name: str
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(sa_column_kwargs={"server_default": text("CURRENT_TIMESTAMP"),})
     # acc_level: str = Field(default="Vendedor")
     
     # Relación 1-M usuario-movimientos
-    movements: List[Movement] = Relationship(back_populates="user")
+    movements: Optional[List[Movement]] = Relationship(back_populates="user")
+
+
+# class Permission(SQLModel, table=True):
+#     __tablename__ = "permisos"
+
+#     id: Optional[int] = Field(default=None, primary_key=True)
+#     name: str
+#     description: str
+
+#     roles: Optional[List["RolePermission"]] = Relationship(back_populates="permission")
+
+
+# class Role(SQLModel, table=True):
+#     __tablename__ = "roles"
+
+#     id: Optional[int] = Field(default=None, primary_key=True)
+#     name: str
+
+#     permissions: Optional[List["RolePermission"]] = Relationship(back_populates="role")
+
+
+# class RolePermission(SQLModel, table=True):
+#     __tablename__ = "roles_permisos"
+
+#     role: Role = Relationship(back_populates='permissions')
+#     role_id: int = Field(foreign_key="roles.id", primary_key=True)
+
+#     permission: Permission = Relationship(back_populates='roles')
+#     permission_id: int = Field(foreign_key="permisos.id", primary_key=True)

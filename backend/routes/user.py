@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.database import get_session
-from app.security import create_access_token, verify_password
-from app.models import User
-from app.middlewares.user_mom import (
+from backend.database import get_session
+from backend.security import create_access_token, verify_password, get_password_hash
+
+from backend.models import User
+from backend.middlewares.user_mom import (
     create_user,            # POST
     get_user_by_id,         # GET
     get_user_by_username,   # GET
@@ -25,6 +26,7 @@ def register(user: User, session: Session = Depends(get_session)):
     existing_user = get_user_by_username(user.username, session)
     if existing_user:
         raise HTTPException(status_code=400, detail="El nombre de usuario ya fue tomado.")
+    setattr(user, 'password', get_password_hash(user.password))
     return create_user(user, session)
 
 

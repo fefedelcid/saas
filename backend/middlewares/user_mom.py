@@ -1,8 +1,14 @@
 from sqlmodel import Session, select
-from app.models import User
+from backend.models import User
+from datetime import datetime
 
 # Crear un usuario
 def create_user(user: User, session: Session):
+    try:
+        setattr(user, 'created_at', datetime.strptime(user.created_at, "%Y-%m-%dT%H:%M:%S.%fZ"))
+    except TypeError:
+        pass
+    
     session.add(user)
     session.commit()
     session.refresh(user)

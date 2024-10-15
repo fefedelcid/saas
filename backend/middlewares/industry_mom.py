@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models import Industry
+from backend.models import Industry
 
 
 # Crear un rubro

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.database import get_session
-from app.models import Product
-from app.middlewares.product_mom import (
+from backend.database import get_session
+
+from backend.models import Product
+from backend.middlewares.product_mom import (
     create_product,         # POST
     get_product_by_id,      # GET
     get_product_by_name,    # GET

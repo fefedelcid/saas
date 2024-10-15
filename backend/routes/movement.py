@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.database import get_session
-from app.models import Movement
-from app.middlewares.movement_mom import (
+from backend.database import get_session
+
+from backend.models import Movement
+from backend.middlewares.movement_mom import (
     create_movement,        # POST
     get_movement_by_id,     # GET
     list_movements,         # GET

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.database import get_session
-from app.models import Supplier
-from app.middlewares.supplier_mom import (
+from backend.database import get_session
+
+from backend.models import Supplier
+from backend.middlewares.supplier_mom import (
     create_supplier,        # POST
     get_supplier_by_id,     # GET
     get_supplier_by_name,   # GET

@@ -1,7 +1,8 @@
 from sqlmodel import Session, SQLModel, create_engine
+from backend import models
 
 # Configurar la base de datos
-DATABASE_URL = "sqlite:///./database/database.db"
+DATABASE_URL = "sqlite:///backend/database/database.db"
 engine = create_engine(DATABASE_URL, echo=True)
 
 # Crear las tablas

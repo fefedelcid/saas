@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.database import get_session
-from app.models import Industry
-from app.middlewares.industry_mom import (
+from backend.database import get_session
+
+from backend.models import Industry
+from backend.middlewares.industry_mom import (
     create_industry,            # POST
     get_industry_by_id,         # GET
     get_industry_by_name,       # GET

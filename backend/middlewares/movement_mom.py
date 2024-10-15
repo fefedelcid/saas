@@ -1,8 +1,14 @@
 from sqlmodel import Session, select
-from app.models import Movement
+from backend.models import Movement
+from datetime import datetime
 
 # Crear un movimiento
 def create_movement(movement: Movement, session: Session):
+    try:
+        setattr(movement, 'created_at', datetime.strptime(movement.created_at, "%Y-%m-%dT%H:%M:%S.%fZ"))
+    except TypeError:
+        pass
+    
     session.add(movement)
     session.commit()
     session.refresh(movement)

@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models import Supplier
+from backend.models import Supplier
 
 # Crear un proveedor
 def create_supplier(supplier: Supplier, session: Session):

@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models import Product
+from backend.models import Product
 
 # Crear un producto
 def create_product(product: Product, session: Session):

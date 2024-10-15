@@ -86,32 +86,3 @@ class User(SQLModel, table=True):
     
     # Relación 1-M usuario-movimientos
     movements: Optional[List[Movement]] = Relationship(back_populates="user")
-
-
-# class Permission(SQLModel, table=True):
-#     __tablename__ = "permisos"
-
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     name: str
-#     description: str
-
-#     roles: Optional[List["RolePermission"]] = Relationship(back_populates="permission")
-
-
-# class Role(SQLModel, table=True):
-#     __tablename__ = "roles"
-
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     name: str
-
-#     permissions: Optional[List["RolePermission"]] = Relationship(back_populates="role")
-
-
-# class RolePermission(SQLModel, table=True):
-#     __tablename__ = "roles_permisos"
-
-#     role: Role = Relationship(back_populates='permissions')
-#     role_id: int = Field(foreign_key="roles.id", primary_key=True)
-
-#     permission: Permission = Relationship(back_populates='roles')
-#     permission_id: int = Field(foreign_key="permisos.id", primary_key=True)

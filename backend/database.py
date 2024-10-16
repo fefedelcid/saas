@@ -1,9 +1,10 @@
 from sqlmodel import Session, SQLModel, create_engine
 from backend import models
+from os import getenv
 
 # Configurar la base de datos
-DATABASE_URL = "sqlite:///backend/database/database.db"
-engine = create_engine(DATABASE_URL, echo=True)
+DB_URI = getenv("DB_URI")
+engine = create_engine(DB_URI, echo=True)
 
 # Crear las tablas
 def create_db_and_tables():

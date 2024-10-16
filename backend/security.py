@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from jwt import encode
+from os import getenv
 
-SECRET_KEY = "My_@wEsomE_sUper_SECRET_key."
-ALGORITHM = "HS256"
+SECRET_KEY = getenv("SECRET_KEY")
+ALGORITHM = getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 

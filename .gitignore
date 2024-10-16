@@ -1,3 +1,10 @@
-/venv
+# Sensible data
 /backend/database/*
 **/.env
+
+# Virtual envs
+/test_venv
+/venv
+
+# vscode
+**/.vscode

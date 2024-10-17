@@ -3,7 +3,7 @@ from backend import models
 from os import getenv
 
 # Configurar la base de datos
-DB_URI = getenv("DB_URI")
+DB_URI = getenv("DATABASE_URI")
 engine = create_engine(DB_URI, echo=True)
 
 # Crear las tablas

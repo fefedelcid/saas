@@ -3,7 +3,6 @@
 **/.env
 
 # Virtual envs
-/test_venv
 /venv
 
 # vscode

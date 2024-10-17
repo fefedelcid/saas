@@ -1,0 +1,57 @@
+services:
+  backend:
+    container_name: fastapi
+    image: fastapi
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app/backend
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URI: postgresql://postgres:password@postgres:5432/postgres
+    ports:
+      - 8000:8000
+
+
+  frontend:
+    container_name: reactjs
+    image: reactjs
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app:cached
+      - ./frontend/node_modules:/app/node_modules:cached
+    ports:
+      - 3000:3000
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+
+
+  
+  postgres:
+    container_name: postgres
+    image: postgres:17-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data:cached
+
+volumes:
+  pgdata:

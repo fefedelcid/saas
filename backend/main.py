@@ -2,29 +2,42 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
-from backend.database import create_db_and_tables
+from backend.db.database import create_db_and_tables
 
 
 # Rutas
-from backend.routes.user import user_router
-from backend.routes.industry import industry_router
-from backend.routes.movement import movement_router
-from backend.routes.detail import detail_router
-from backend.routes.product import product_router
-from backend.routes.supplier import supplier_router
+from backend.modules import rUser
+from backend.modules import rIndustry
+from backend.modules import rMovement
+from backend.modules import rDetail
+from backend.modules import rProduct
+from backend.modules import rSupplier
 
 
 # Inicializo FastAPI
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        # Cambiar si el frontend está en otro origen
+        "http://localhost:3000",
+        "http://localhost:5173"
+    ], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Incluyo rutas de usuario
-app.include_router(user_router, prefix="/u")
-app.include_router(industry_router, prefix="/i")
-app.include_router(movement_router, prefix="/m")
-app.include_router(detail_router, prefix="/d")
-app.include_router(product_router, prefix="/p")
-app.include_router(supplier_router, prefix="/s")
+app.include_router(rUser, prefix="/u", tags=["Usuarios"])
+app.include_router(rIndustry, prefix="/i", tags=["Rubros"])
+app.include_router(rMovement, prefix="/m", tags=["Movimientos"])
+app.include_router(rDetail, prefix="/d", tags=["Detalles"])
+app.include_router(rProduct, prefix="/p", tags=["Inventario"])
+app.include_router(rSupplier, prefix="/s", tags=["Proveedores"])
 
 
 @app.on_event("startup")
